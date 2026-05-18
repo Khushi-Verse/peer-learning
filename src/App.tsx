@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -31,6 +31,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AIPage from "./pages/aipage";
 import FloatingAI from "./components/FloatingAI";
 import ContributorDashboard from "./pages/ContributorDashboard";
+const ResourceHub = React.lazy(() => import("@/pages/ResourceHub"));
 
 import { supabase } from "./lib/supabase";
 import BecomeMentor from "./pages/BecomeMentor";
@@ -242,6 +243,17 @@ function App() {
                   <ProtectedRoute>
                     <WithNav>
                       <Leaderboard />
+                    </WithNav>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/resources"
+                element={
+                  <ProtectedRoute>
+                    <WithNav>
+                      <ResourceHub />
                     </WithNav>
                   </ProtectedRoute>
                 }
