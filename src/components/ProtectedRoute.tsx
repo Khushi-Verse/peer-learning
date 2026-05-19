@@ -9,24 +9,17 @@ const [loading, setLoading] = useState(true);
 const { needsOnboarding } = useAuth();
 const location = useLocation();
 
-useEffect(() => {
-// 🔥 Get current session
-supabase.auth.getSession().then(({ data }) => {
-setUser(data.session?.user ?? null);
-setLoading(false);
-});
-
-
-// 🔥 Listen to auth changes (VERY IMPORTANT)
-const { data: listener } = supabase.auth.onAuthStateChange(
-  (_event, session) => {
-    setUser(session?.user ?? null);
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
   }
-);
 
-return () => {
-  listener.subscription.unsubscribe();
-};
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
 
 }, []);

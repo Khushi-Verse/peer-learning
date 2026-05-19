@@ -231,6 +231,11 @@ const Chat = () => {
 
     if (!content || !currentUser?.id || !selectedUser?.id) return;
 
+    if (content.length > 2000) {
+      alert("Message exceeds maximum length of 2000 characters.");
+      return;
+    }
+
     setMessageText("");
     await sendTypingStatus(false);
 
