@@ -78,7 +78,8 @@ const RecommendationPanel = ({ profile, sessions }: RecommendationPanelProps) =>
         )
         .eq("is_mentor", true)
         .neq("id", profile?.id || "")
-        .order("points", { ascending: false });
+        .order("points", { ascending: false })
+        .limit(50);
 
       if (!error && data) {
         setMentors(data as MentorCandidate[]);
@@ -153,7 +154,8 @@ const RecommendationPanel = ({ profile, sessions }: RecommendationPanelProps) =>
       )
       .eq("is_mentor", true)
       .neq("id", profile?.id || "")
-      .order("points", { ascending: false });
+      .order("points", { ascending: false })
+      .limit(50);
 
     setMentors((data || []) as MentorCandidate[]);
     setLoadingMentors(false);

@@ -87,12 +87,14 @@ const Chat = () => {
           .from("profiles")
           .select("*")
           .neq("id", currentUser.id)
-          .order("name", { ascending: true }),
+          .order("name", { ascending: true })
+          .limit(100),
         supabase
           .from("users")
           .select("*")
           .neq("id", currentUser.id)
-          .order("name", { ascending: true }),
+          .order("name", { ascending: true })
+          .limit(100),
       ]);
 
       const mergedUsers = mergeUsers(
@@ -127,12 +129,14 @@ const Chat = () => {
             .select("*")
             .neq("id", currentUser.id)
             .order("name", { ascending: true })
+            .limit(100)
             .then(({ data: profileData }) => {
               void supabase
                 .from("users")
                 .select("*")
                 .neq("id", currentUser.id)
                 .order("name", { ascending: true })
+                .limit(100)
                 .then(({ data: userData }) => {
                   setUsers(
                     mergeUsers((profileData ?? []) as Profile[], (userData ?? []) as UserRow[])

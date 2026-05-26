@@ -56,7 +56,8 @@ const Sessions = () => {
         .select("*")
         .order("created_at", {
           ascending: false,
-        });
+        })
+        .limit(100);
 
       if (error) {
         console.log(error);
