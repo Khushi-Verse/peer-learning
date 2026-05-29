@@ -555,40 +555,46 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section id="features" className="container px-6 py-24">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
+      {/* Features */}
+<section id="features" className="container px-6 py-24">
+  <motion.h2
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="mb-16 text-center text-5xl font-black"
+  >
+    Powerful Features
+  </motion.h2>
+
+  <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+    {features.map((f, i) => {
+      const Icon = f.icon; 
+
+      return (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.1 }}
           viewport={{ once: true }}
-          className="mb-16 text-center text-5xl font-black"
+          whileHover={{ y: -12 }}
+          className="group rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-500/5 hover:shadow-[0_0_60px_rgba(34,211,238,0.18)]"
         >
-          Powerful Features
-        </motion.h2>
+          {/* Icon container */}
+          <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black group-hover:scale-110 transition-transform duration-300">
+            <Icon className="h-6 w-6" />
+          </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -12 }}
-              className="group rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-500/5 hover:shadow-[0_0_60px_rgba(34,211,238,0.18)]"
-            >
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black">
-                <f.icon />
-              </div>
+          <h3 className="text-2xl font-bold">{f.title}</h3>
 
-              <h3 className="text-2xl font-bold">{f.title}</h3>
-
-              <p className="mt-4 leading-7 text-slate-300/70">
-                {f.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+          <p className="mt-4 leading-7 text-slate-300/70">
+            {f.description}
+          </p>
+        </motion.div>
+      );
+    })}
+  </div>
+</section>
 
       {/* Learners & Mentors */}
       <section className="container grid gap-8 px-6 py-24 lg:grid-cols-2">
