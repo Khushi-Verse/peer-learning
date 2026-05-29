@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { Filter, Upload } from "lucide-react";
 
 import FilterSidebar from "@/components/resources/FilterSidebar";
@@ -37,11 +37,11 @@ const ResourceHub = () => {
     return resources.filter((resource) => ["py", "js", "ts"].includes(resource.file_type));
   }, [resources, selectedType]);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearch("");
     setSelectedTags([]);
     setSelectedType("all");
-  };
+  }, []);
 
   const sidebar = (
     <FilterSidebar
