@@ -20,9 +20,9 @@ import {
   Rocket,
   Briefcase,
   Activity,
-  Menu, X
+  Menu,
+  X,
 } from "lucide-react";
-
 
 import { Button } from "@/components/ui/button";
 import {
@@ -1018,27 +1018,35 @@ export default function Landing() {
             <h3 className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-3xl font-black text-transparent">
               PeerLearn
             </h3>
+
             <p className="mt-3 text-slate-400">
               Built for collaborative student learning.
             </p>
           </div>
 
-          <div className="flex gap-8 text-slate-300">
+          <div className="flex flex-wrap gap-8 text-slate-300">
             <a href="#features" className="transition hover:text-cyan-400">
               Features
             </a>
+
             <a href="#community" className="transition hover:text-cyan-400">
               Communities
             </a>
+
             <a href="#faq" className="transition hover:text-cyan-400">
               FAQ
             </a>
-            <a
-              href="/privacy-policy"
+
+            <Link to="/contact" className="transition hover:text-cyan-400">
+              Contact Us
+            </Link>
+
+            <Link
+              to="/privacy-policy"
               className="transition hover:text-cyan-400"
             >
               Privacy Policy
-            </a>
+            </Link>
           </div>
 
           <div className="text-slate-500">© 2026 PeerLearn</div>
