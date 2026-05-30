@@ -88,6 +88,65 @@ router.post(
       console.error("Chat route error:", error);
       res.status(500).json({ error: "Failed to get a response from the AI service." });
     }
+
+
+    // Cap the number of messages in the conversation history. Without this
+    // limit a caller can send an unbounded history and consume a large number
+    // of input tokens per request.
+    const MAX_MESSAGES = 50;
+    if (messages.length > MAX_MESSAGES) {
+      return res.status(400).json({
+        error: `messages array must not exceed ${MAX_MESSAGES} entries.`,
+      });
+    }
+
+    // Validate each message has the expected shape and enforce an individual
+    // content length limit. Without a length cap a single message with very
+    // long text can exhaust the upstream token quota.
+    const MAX_CONTENT_LENGTH = 4000;
+    const isValid = messages.every(
+      (m) =>
+        typeof m === "object" &&
+        (m.role === "user" || m.role === "assistant" || m.role === "system") &&
+        typeof m.content === "string" &&
+        m.content.length <= MAX_CONTENT_LENGTH
+    );
+
+    if (!isValid) {
+      return res
+        .status(400)
+        .json({
+          error: `Each message must have a role (user|assistant|system) and a string content field of at most ${MAX_CONTENT_LENGTH} characters.`,
+        });
+    }
+
+    // Reject unknown models to prevent cost escalation.
+    if (!ALLOWED_MODELS.has(model)) {
+      return res.status(400).json({ error: "Requested model is not allowed." });
+    }
+
+    // Cap token count server-side regardless of caller input.
+    const safeMaxTokens = Math.min(
+      typeof max_tokens === "number" ? max_tokens : MAX_TOKENS_CAP,
+      MAX_TOKENS_CAP
+    );
+
+    const chatMessages = systemPrompt
+      ? [{ role: "system", content: String(systemPrompt) }, ...messages]
+      : messages;
+
+    const response = await openrouter.chat.completions.create({
+      model,
+      messages: chatMessages,
+      max_tokens: safeMaxTokens,
+      temperature,
+    });
+
+    res.json({ reply: response.choices[0].message.content });
+  } catch (error) {
+    console.error("Chat route error:", error);
+    res.status(500).json({ error: "Failed to get a response from the AI service." });
+
   }
 );
 
