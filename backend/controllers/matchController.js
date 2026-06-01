@@ -168,7 +168,14 @@ export const getSupabaseDiscover = async (req, res) => {
     let query = supabase.from("profiles").select("*").neq("id", userId).limit(100);
 
     if (search.trim()) {
-      const safeSearch = search.trim().replace(/"/g, '""');
+      // Deeply sanitize search input to prevent PostgREST parsing errors and wildcard (%) DDoS
+      const safeSearch = search
+        .trim()
+        .replace(/\\/g, '\\\\') // Escape backslashes first
+        .replace(/"/g, '""')    // Escape double quotes for PostgREST literal string
+        .replace(/%/g, '\\%')   // Escape wildcards to prevent expensive table scans
+        .replace(/_/g, '\\_');
+
       query = query.or(`name.ilike."%${safeSearch}%",skills.ilike."%${safeSearch}%"`);
     }
 
