@@ -25,7 +25,13 @@ const verifyLocalJwt = (token, secret) => {
       .replace(/\//g, "_")
       .replace(/=/g, "");
 
-    if (expectedSignature !== signatureB64) {
+    const expectedSignatureBuffer = Buffer.from(expectedSignature);
+    const signatureBuffer = Buffer.from(signatureB64);
+
+    if (
+      expectedSignatureBuffer.length !== signatureBuffer.length ||
+      !crypto.timingSafeEqual(expectedSignatureBuffer, signatureBuffer)
+    ) {
       return null;
     }
 
