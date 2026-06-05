@@ -151,7 +151,9 @@ export const getSupabaseDiscover = async (req, res) => {
     const userId = req.user.id;
     const search = req.query.search || "";
     const filter = req.query.filter || "All";
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(parseInt(req.query.limit, 10) || 100, 100);
+    const skip = (page - 1) * limit;
 
     const supabaseAdmin = getSupabaseAdmin();
 
@@ -169,7 +171,7 @@ export const getSupabaseDiscover = async (req, res) => {
       .from("profiles")
       .select("id, name, skills, interests, learning_goals, teach_subjects, learn_subjects, learning_style, preferred_language, timezone")
       .neq("id", userId)
-      .limit(100);
+      .range(skip, skip + limit - 1);
 
     if (search.trim()) {
       const safeSearch = search.trim().replace(/[",()]/g, '');
