@@ -110,8 +110,27 @@ export default function Room() {
         toast.error("Room not found or you don't have access.");
         navigate('/rooms');
       }
+      return;
     }
-    if (data) setRoom(data);
+    if (!data) return;
+
+    setRoom(data);
+
+    // Auto-register the current user as a participant.
+    // For public rooms this is always allowed.
+    // For private rooms the RPC will throw if the user is not invited/creator.
+    if (user) {
+      const { error: joinError } = await supabase.rpc('join_public_study_room', {
+        p_room_id: id as string,
+      });
+
+      if (joinError) {
+        // User is not authorised to be in this private room
+        console.error("Access denied:", joinError.message);
+        alert(joinError.message || "You don't have access to this room.");
+        navigate('/rooms');
+      }
+    }
   };
 
   const fetchMessages = async () => {
