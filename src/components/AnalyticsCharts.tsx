@@ -1,4 +1,3 @@
-"use client";
 import { useMemo } from "react";
 import {
   Chart as ChartJS,
@@ -24,43 +23,75 @@ ChartJS.register(
   Legend
 );
 
+interface AnalyticsChartsProps {
+  profile: { points?: number | null } | null;
+  sessions: { status: string }[];
+  /**
+   * Learning hours per day for the current week (Mon → Sun, 7 values).
+   * Provided by the parent once real session-duration data is available.
+   * Defaults to all-zeros so the chart renders an honest empty state.
+   */
+  weeklyHours?: number[];
+}
 
-export default function AnalyticsCharts({ profile, sessions }) {
-  const learningHoursData = useMemo(() => ({
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "Learning Hours",
-        data: [2, 3, 1, 4, 5, 2, 6], // replace with Supabase data
-        borderColor: "rgb(34,211,238)",
-        backgroundColor: "rgba(34,211,238,0.3)",
-      },
-    ],
-  }), []);
+const DEFAULT_WEEKLY_HOURS: number[] = [0, 0, 0, 0, 0, 0, 0];
 
-  const attendanceData = useMemo(() => ({
-    labels: ["Attended", "Missed"],
-    datasets: [
-      {
-        label: "Sessions",
-        data: [sessions.filter(s => s.status === "attended").length,
-               sessions.filter(s => s.status === "missed").length],
-        backgroundColor: ["rgba(34,211,238,0.6)", "rgba(239,68,68,0.6)"],
-      },
-    ],
-  }), [sessions]);
+export default function AnalyticsCharts({
+  profile,
+  sessions,
+  weeklyHours = DEFAULT_WEEKLY_HOURS,
+}: AnalyticsChartsProps) {
+  const learningHoursData = useMemo(
+    () => ({
+      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      datasets: [
+        {
+          label: "Learning Hours",
+          data: weeklyHours,
+          borderColor: "rgb(34,211,238)",
+          backgroundColor: "rgba(34,211,238,0.3)",
+        },
+      ],
+    }),
+    [weeklyHours],
+  );
 
-  const xpGrowthData = useMemo(() => ({
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    datasets: [
-      {
-        label: "XP Growth",
-        data: [100, 200, 350, profile?.points || 0],
-        borderColor: "rgb(59,130,246)",
-        backgroundColor: "rgba(59,130,246,0.3)",
-      },
-    ],
-  }), [profile?.points]);
+  const attendanceData = useMemo(
+    () => ({
+      labels: ["Attended", "Missed"],
+      datasets: [
+        {
+          label: "Sessions",
+          data: [
+            sessions.filter((s) => s.status === "attended").length,
+            sessions.filter((s) => s.status === "missed").length,
+          ],
+          backgroundColor: [
+            "rgba(34,211,238,0.6)",
+            "rgba(239,68,68,0.6)",
+          ],
+        },
+      ],
+    }),
+    [sessions],
+  );
+
+  const xpGrowthData = useMemo(() => {
+    const currentXP = profile?.points ?? 0;
+    // Weeks 1–3 are shown as 0 until a dedicated XP-history table is
+    // available. Only the current week reflects real data.
+    return {
+      labels: ["Week 1", "Week 2", "Week 3", "This Week"],
+      datasets: [
+        {
+          label: "XP Growth",
+          data: [0, 0, 0, currentXP],
+          borderColor: "rgb(59,130,246)",
+          backgroundColor: "rgba(59,130,246,0.3)",
+        },
+      ],
+    };
+  }, [profile?.points]);
 
   return (
     <div className="grid gap-8 md:grid-cols-2 mt-10">
