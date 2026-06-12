@@ -94,5 +94,5 @@ REVOKE ALL ON FUNCTION public.match_users(
 ) FROM PUBLIC;
 
 GRANT EXECUTE ON FUNCTION public.match_users(
-    text, text[], text[], text[], text[], text[], int, int
-) TO authenticated;
+    text, text[], text[], text[], text[], int, int
+) TO authenticated, service_role;
