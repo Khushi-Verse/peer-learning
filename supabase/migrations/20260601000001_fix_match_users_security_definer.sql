@@ -49,7 +49,7 @@ BEGIN
         )::int AS compatibility_score
     FROM public.profiles p
     WHERE p.email != target_email
-    ORDER BY compatibility_score DESC
+    ORDER BY compatibility_score DESC, p.id ASC
     LIMIT page_limit OFFSET page_offset;
 END;
 $$;
