@@ -1,13 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   createBackgroundRateLimiter,
   createCooldownTracker,
 } from "../middlewares/requireCronSecret.js";
 
 describe("createBackgroundRateLimiter", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
 
   it("allows the first request from an IP", () => {
     const limiter = createBackgroundRateLimiter(60_000, 5);
@@ -58,9 +57,8 @@ describe("createBackgroundRateLimiter", () => {
 });
 
 describe("createCooldownTracker", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
 
   it("allows first invocation of a route key", () => {
     const cooldown = createCooldownTracker(60_000);
